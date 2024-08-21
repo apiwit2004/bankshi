@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
 
-class Frame7 extends StatelessWidget {
+class Frame7 extends StatefulWidget {
+  @override
+  _Frame7State createState() => _Frame7State();
+}
+
+class _Frame7State extends State<Frame7> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  bool isButtonEnabled = false;
+
+  void _checkInput() {
+    setState(() {
+      // ตรวจสอบว่า Username, Password และ Confirm Password ถูกกรอกแล้วหรือไม่
+      isButtonEnabled = usernameController.text.isNotEmpty &&
+          passwordController.text.isNotEmpty &&
+          confirmPasswordController.text.isNotEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +34,7 @@ class Frame7 extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('Sign in', style: TextStyle(color: Colors.black)),
+        title: Text('Sign Up', style: TextStyle(color: Colors.black)),
       ),
       body: Center(
         child: Padding(
@@ -36,39 +57,56 @@ class Frame7 extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
+                  controller: usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
+                  },
                 ),
                 SizedBox(height: 20),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
+                  },
                 ),
                 SizedBox(height: 20),
                 TextField(
+                  controller: confirmPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Confirm Password',
                     border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
+                  },
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () {
-                    // เมื่อกดปุ่ม Register จะไปยังหน้า frame_8.dart
-                    Navigator.pushNamed(context, '/frame_8');
-                  },
+                  onPressed: isButtonEnabled
+                      ? () {
+                          // ฟังก์ชันสำหรับการสมัครสมาชิก
+                          // เมื่อกดปุ่ม Register ให้ไปยังหน้า success frame_8.dart
+                          Navigator.pushNamed(context, '/frame_8');
+                        }
+                      : null, // ปิดใช้งานปุ่มหากไม่มีข้อมูล
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    backgroundColor: Colors.purple[900],
+                    backgroundColor: isButtonEnabled
+                        ? Colors.purple[900]
+                        : Colors.grey, // เปลี่ยนสีปุ่มตามสถานะ
                   ),
                   child: Text(
                     'Register',

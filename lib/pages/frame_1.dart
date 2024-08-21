@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 
-class Frame1 extends StatelessWidget {
+class Frame1 extends StatefulWidget {
+  @override
+  _Frame1State createState() => _Frame1State();
+}
+
+class _Frame1State extends State<Frame1> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isButtonEnabled = false;
+
+  void _checkInput() {
+    setState(() {
+      // ตรวจสอบว่าทั้ง Username และ Password ถูกกรอกแล้วหรือไม่
+      isButtonEnabled = usernameController.text.isNotEmpty &&
+          passwordController.text.isNotEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +48,7 @@ class Frame1 extends StatelessWidget {
             ),
             SizedBox(height: 30),
             TextField(
+              controller: usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
                 filled: true,
@@ -39,9 +58,13 @@ class Frame1 extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
               ),
+              onChanged: (value) {
+                _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
+              },
             ),
             SizedBox(height: 20),
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -52,37 +75,26 @@ class Frame1 extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Checkbox(value: false, onChanged: (bool? value) {}),
-                    Text('Remember me'),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Forgot password functionality
-                  },
-                  child: Text('Forgot password?'),
-                ),
-              ],
+              onChanged: (value) {
+                _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
+              },
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                    context, '/frame_2'); // นำทางไปยัง frame_2.dart
-              },
+              onPressed: isButtonEnabled
+                  ? () {
+                      // นำทางไปยัง frame_2.dart
+                      Navigator.pushNamed(context, '/frame_2');
+                    }
+                  : null, // ปิดใช้งานปุ่มหากไม่มีข้อมูล
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                backgroundColor: Colors.purple[900],
+                backgroundColor: isButtonEnabled
+                    ? Colors.purple[900]
+                    : Colors.grey, // เปลี่ยนสีปุ่มตามสถานะ
               ),
               child: Text(
                 'Log in',
