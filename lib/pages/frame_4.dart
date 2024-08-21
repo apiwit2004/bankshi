@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // นำเข้าห้องสมุด intl
 
 class Frame4 extends StatelessWidget {
   final String projectName = 'Project_2'; // ตัวอย่างชื่อโปรเจค
+  final String currentDate =
+      DateFormat('dd/MM/yyyy').format(DateTime.now()); // วันที่ปัจจุบัน
+  final String currentTime =
+      DateFormat.Hm().format(DateTime.now()); // เวลาปัจจุบัน
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,8 @@ class Frame4 extends StatelessWidget {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('dd/mm/yyyy'),
+                  child: Text(
+                      currentDate), // แสดงวันที่ปัจจุบันในรูปแบบ dd/MM/yyyy
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -47,7 +53,7 @@ class Frame4 extends StatelessWidget {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('00.00'),
+                  child: Text(currentTime), // แสดงเวลาปัจจุบัน
                 ),
               ],
             ),
@@ -90,8 +96,8 @@ class Frame4 extends StatelessWidget {
                   // เมื่อกดปุ่ม Save จะไปยังหน้า Confirm Data (frame_5.dart)
                   Navigator.pushNamed(context, '/frame_5', arguments: {
                     'projectName': projectName,
-                    'date': 'dd/mm/yyyy',
-                    'time': '00.00',
+                    'date': currentDate, // ส่งวันที่ปัจจุบัน
+                    'time': currentTime, // ส่งเวลาปัจจุบันไปที่ frame_5.dart
                     'name': 'name', // ข้อมูลตัวอย่าง
                     'value': 'Value',
                     'description': 'Description',

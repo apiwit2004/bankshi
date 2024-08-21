@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // ใช้สำหรับการจัดการวันที่
 
 class Frame3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ดึงวันที่ปัจจุบันจากเครื่องในรูปแบบ dd/MM/yyyy
+    String currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
     // ตรวจสอบว่าค่า arguments ไม่เป็น null
     final String projectName =
         ModalRoute.of(context)?.settings.arguments as String? ??
@@ -19,6 +23,23 @@ class Frame3 extends StatelessWidget {
           },
         ),
         title: Text(projectName, style: TextStyle(color: Colors.black)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Center(
+              child: Text(
+                currentDate, // แสดงวันที่ในรูปแบบ dd/MM/yyyy
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.person, color: Colors.black),
+            onPressed: () {
+              // ฟังก์ชันโปรไฟล์
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,7 +72,7 @@ class Frame3 extends StatelessWidget {
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     Text(
-                      'dd/mm/yyyy',
+                      currentDate, // แสดงวันที่ในรูปแบบ dd/MM/yyyy
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
@@ -69,24 +90,24 @@ class Frame3 extends StatelessWidget {
                     icon: Icons.save,
                     label: 'Save data',
                     onTap: () {
-                      Navigator.pushNamed(context, '/frame_4',
-                          arguments: projectName);
+                      Navigator.pushNamed(
+                        context,
+                        '/frame_4',
+                        arguments: projectName,
+                      );
                     },
                   ),
                   ProjectActionTile(
                     icon: Icons.show_chart,
                     label: 'Graph',
                     onTap: () {
-                      // นำทางไปยัง frame_9.dart พร้อมกับส่งชื่อโปรเจคไปด้วย
-                      Navigator.pushNamed(context, '/frame_9',
-                          arguments: projectName);
+                      Navigator.pushNamed(context, '/frame_9');
                     },
                   ),
                   ProjectActionTile(
                     icon: Icons.download,
                     label: 'Download',
                     onTap: () {
-                      // นำทางไปยัง frame_10.dart
                       Navigator.pushNamed(context, '/frame_10');
                     },
                   ),
@@ -94,7 +115,6 @@ class Frame3 extends StatelessWidget {
                     icon: Icons.upload,
                     label: 'Upload file',
                     onTap: () {
-                      // นำทางไปยัง frame_11.dart
                       Navigator.pushNamed(context, '/frame_11');
                     },
                   ),
@@ -102,7 +122,6 @@ class Frame3 extends StatelessWidget {
                     icon: Icons.access_time,
                     label: 'Clock',
                     onTap: () {
-                      // นำทางไปยัง frame_12.dart
                       Navigator.pushNamed(context, '/frame_12');
                     },
                   ),
@@ -110,7 +129,6 @@ class Frame3 extends StatelessWidget {
                     icon: Icons.chat,
                     label: 'Chat GPT',
                     onTap: () {
-                      // นำทางไปยัง frame_13.dart
                       Navigator.pushNamed(context, '/frame_13');
                     },
                   ),

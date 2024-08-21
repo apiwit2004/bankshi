@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import intl package
 
 class Frame2 extends StatefulWidget {
   @override
@@ -6,80 +7,56 @@ class Frame2 extends StatefulWidget {
 }
 
 class _Frame2State extends State<Frame2> {
-  List<String> projects = ['Project_1', 'Project_2']; // รายการโปรเจกต์เริ่มต้น
-  TextEditingController projectController =
-      TextEditingController(); // สำหรับเพิ่ม/แก้ไขโปรเจกต์
+  List<String> projects = ['Project_1', 'Project_2'];
 
-  void _addProject(String projectName) {
+  // ดึงวันที่ปัจจุบันจากเครื่องในรูปแบบ dd/MM/yyyy
+  String currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+  void _addProject() {
     setState(() {
-      projects.add(projectName);
+      projects.add('New Project');
     });
-    Navigator.of(context).pop();
   }
 
-  void _editProject(int index, String newName) {
-    setState(() {
-      projects[index] = newName;
-    });
-    Navigator.of(context).pop();
+  void _editProject(int index) {
+    // ตัวอย่างโค้ดสำหรับการแก้ไขชื่อโปรเจ็กต์
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController controller =
+            TextEditingController(text: projects[index]);
+        return AlertDialog(
+          title: Text('Edit Project'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(hintText: "Project Name"),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () {
+                setState(() {
+                  projects[index] = controller.text;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _deleteProject(int index) {
     setState(() {
       projects.removeAt(index);
     });
-  }
-
-  void _showAddProjectDialog() {
-    projectController.clear();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add Project'),
-          content: TextField(
-            controller: projectController,
-            decoration: InputDecoration(hintText: 'Enter project name'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (projectController.text.isNotEmpty) {
-                  _addProject(projectController.text);
-                }
-              },
-              child: Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditProjectDialog(int index) {
-    projectController.text = projects[index];
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Edit Project'),
-          content: TextField(
-            controller: projectController,
-            decoration: InputDecoration(hintText: 'Edit project name'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (projectController.text.isNotEmpty) {
-                  _editProject(index, projectController.text);
-                }
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -128,7 +105,7 @@ class _Frame2State extends State<Frame2> {
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     Text(
-                      'dd/mm/yyyy',
+                      currentDate, // แสดงวันที่ในรูปแบบ dd/MM/yyyy
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
@@ -137,70 +114,117 @@ class _Frame2State extends State<Frame2> {
             ),
             SizedBox(height: 30),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemCount: projects.length + 1, // +1 เพื่อรวมปุ่มเพิ่มโปรเจกต์
-                itemBuilder: (context, index) {
-                  if (index == projects.length) {
-                    // แสดงปุ่มเพิ่มโปรเจกต์
-                    return GestureDetector(
-                      onTap: _showAddProjectDialog,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Center(
-                          child: Icon(Icons.add, size: 50, color: Colors.black),
-                        ),
-                      ),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                children: [
+                  ...projects.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    String projectName = entry.value;
+                    return ProjectTile(
+                      icon: Icons.science,
+                      label: projectName,
+                      onEdit: () => _editProject(index),
+                      onDelete: () => _deleteProject(index),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/frame_3',
+                          arguments: projectName,
+                        );
+                      },
                     );
-                  }
-                  // แสดงโปรเจกต์
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/frame_3',
-                          arguments: projects[index]);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.science, size: 50, color: Colors.black),
-                          SizedBox(height: 10),
-                          Text(
-                            projects[index],
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () => _showEditProjectDialog(index),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () => _deleteProject(index),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  }).toList(),
+                  AddProjectTile(onTap: _addProject),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: Icon(Icons.exit_to_app, size: 30),
+                onPressed: () {
+                  Navigator.pop(context); // ออกจากระบบ
                 },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProjectTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  ProjectTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 50, color: Colors.black),
+            SizedBox(height: 10),
+            Text(
+              label,
+              style: TextStyle(fontSize: 16),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: onEdit,
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: onDelete,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AddProjectTile extends StatelessWidget {
+  final VoidCallback onTap;
+
+  AddProjectTile({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Center(
+          child: Icon(Icons.add, size: 50, color: Colors.black),
         ),
       ),
     );

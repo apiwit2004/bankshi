@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Frame5 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ดึงข้อมูล arguments ที่ถูกส่งมาจาก frame_4.dart
     final Map<String, String> data =
         ModalRoute.of(context)?.settings.arguments as Map<String, String>;
 
@@ -16,7 +17,7 @@ class Frame5 extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('Save data', style: TextStyle(color: Colors.black)),
+        title: Text('Confirm Data', style: TextStyle(color: Colors.black)),
         actions: [
           IconButton(
             icon: Icon(Icons.person, color: Colors.black),
@@ -45,7 +46,8 @@ class Frame5 extends StatelessWidget {
                   data['projectName'] ?? 'Unknown Project',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                Text('${data['date']} ${data['time']}'),
+                Text(
+                    '${data['date']} ${data['time']}'), // แสดงวันที่และเวลาจาก frame_4
               ],
             ),
             SizedBox(height: 20),
