@@ -21,9 +21,7 @@ class Frame5 extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.person, color: Colors.black),
-            onPressed: () {
-              // ฟังก์ชันโปรไฟล์
-            },
+            onPressed: () {},
           ),
         ],
       ),
