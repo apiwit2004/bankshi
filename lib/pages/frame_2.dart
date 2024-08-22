@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import intl package
+import 'package:intl/intl.dart'; // ใช้สำหรับการจัดการวันที่
 
 class Frame2 extends StatefulWidget {
   @override
@@ -18,45 +18,70 @@ class _Frame2State extends State<Frame2> {
     });
   }
 
-  void _editProject(int index) {
-    // ตัวอย่างโค้ดสำหรับการแก้ไขชื่อโปรเจ็กต์
+  void _confirmDeleteProject(int index) {
     showDialog(
       context: context,
-      builder: (context) {
-        TextEditingController controller =
-            TextEditingController(text: projects[index]);
-        return AlertDialog(
-          title: Text('Edit Project'),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: "Project Name"),
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Delete'),
+        content: Text('Are you sure you want to delete this project?'),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(); // ปิด dialog
+            },
           ),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Save'),
-              onPressed: () {
-                setState(() {
-                  projects[index] = controller.text;
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+          TextButton(
+            child: Text('Delete'),
+            onPressed: () {
+              setState(() {
+                projects.removeAt(index); // ลบโปรเจกต์
+              });
+              Navigator.of(context).pop(); // ปิด dialog
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  void _deleteProject(int index) {
-    setState(() {
-      projects.removeAt(index);
-    });
+  void _confirmEditProject(int index) {
+    TextEditingController controller =
+        TextEditingController(text: projects[index]);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Edit'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Are you sure you want to edit this project?'),
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(hintText: "Project Name"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(); // ปิด dialog
+            },
+          ),
+          TextButton(
+            child: Text('Save'),
+            onPressed: () {
+              setState(() {
+                projects[index] = controller.text; // แก้ไขโปรเจกต์
+              });
+              Navigator.of(context).pop(); // ปิด dialog
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -125,8 +150,8 @@ class _Frame2State extends State<Frame2> {
                     return ProjectTile(
                       icon: Icons.science,
                       label: projectName,
-                      onEdit: () => _editProject(index),
-                      onDelete: () => _deleteProject(index),
+                      onEdit: () => _confirmEditProject(index),
+                      onDelete: () => _confirmDeleteProject(index),
                       onTap: () {
                         Navigator.pushNamed(
                           context,
