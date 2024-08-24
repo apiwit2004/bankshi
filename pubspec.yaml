@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   url_launcher: ^6.0.20  # คุณเพิ่ม url_launcher เพื่อเปิดลิงก์
   intl: ^0.17.0  # เพิ่ม intl สำหรับจัดการวันที่
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

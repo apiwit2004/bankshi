@@ -1,40 +1,15 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
-class Frame7 extends StatefulWidget {
-  @override
-  _Frame7State createState() => _Frame7State();
-}
-
-class _Frame7State extends State<Frame7> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-
-  bool isButtonEnabled = false;
-
-  void _checkInput() {
-    setState(() {
-      // ตรวจสอบว่า Username, Password และ Confirm Password ถูกกรอกแล้วหรือไม่
-      isButtonEnabled = usernameController.text.isNotEmpty &&
-          passwordController.text.isNotEmpty &&
-          confirmPasswordController.text.isNotEmpty;
-    });
-  }
+class Frame7 extends StatelessWidget {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text('Sign Up', style: TextStyle(color: Colors.black)),
+        title: Text('Register'),
       ),
       body: Center(
         child: Padding(
@@ -57,56 +32,57 @@ class _Frame7State extends State<Frame7> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: usernameController,
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) {
-                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
-                  },
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  controller: passwordController,
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) {
-                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
-                  },
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    _checkInput(); // ตรวจสอบข้อมูลเมื่อมีการเปลี่ยนแปลง
-                  },
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: isButtonEnabled
-                      ? () {
-                          // ฟังก์ชันสำหรับการสมัครสมาชิก
-                          // เมื่อกดปุ่ม Register ให้ไปยังหน้า success frame_8.dart
-                          Navigator.pushNamed(context, '/frame_8');
-                        }
-                      : null, // ปิดใช้งานปุ่มหากไม่มีข้อมูล
+                  onPressed: () {
+                    final username = _usernameController.text;
+                    final password = _passwordController.text;
+
+                    // ตรวจสอบว่าได้กรอกข้อมูลครบถ้วน
+                    if (username.isEmpty || password.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Please fill in all fields.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      // เรียกใช้ฟังก์ชัน API เพื่อสมัครผู้ใช้ใหม่
+                      ApiService().registerUser(username, password, context);
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    backgroundColor: isButtonEnabled
-                        ? Colors.purple[900]
-                        : Colors.grey, // เปลี่ยนสีปุ่มตามสถานะ
+                    backgroundColor: Colors.purple[900],
                   ),
                   child: Text(
                     'Register',
