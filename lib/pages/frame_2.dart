@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // ใช้สำหรับการจัดการวันที่
+import '../services/api_service.dart'; // นำเข้า ApiService
 
 class Frame2 extends StatefulWidget {
+  final String username; // เพิ่มตัวแปร username สำหรับแสดงผล
+
+  Frame2({required this.username}); // รับค่า username จากการนำทาง
+
   @override
   _Frame2State createState() => _Frame2State();
 }
@@ -94,7 +99,9 @@ class _Frame2State extends State<Frame2> {
           IconButton(
             icon: Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // ฟังก์ชันการตั้งค่า
+              // นำทางไปยัง Frame14 เมื่อกดปุ่ม settings
+              Navigator.pushNamed(context, '/frame_14',
+                  arguments: widget.username);
             },
           ),
         ],
@@ -126,7 +133,7 @@ class _Frame2State extends State<Frame2> {
                       ),
                     ),
                     Text(
-                      'Username',
+                      widget.username, // แสดง username ที่รับมาจากฐานข้อมูล
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
 class Frame1 extends StatefulWidget {
   @override
@@ -17,6 +18,36 @@ class _Frame1State extends State<Frame1> {
       isButtonEnabled = usernameController.text.isNotEmpty &&
           passwordController.text.isNotEmpty;
     });
+  }
+
+  Future<void> _loginUser() async {
+    final username = usernameController.text;
+    final password = passwordController.text;
+
+    final isValid = await ApiService().loginUser(username, password, context);
+
+    if (isValid) {
+      Navigator.pushNamed(context, '/frame_2', arguments: username);
+    } else {
+      // แสดง AlertDialog ว่า username หรือ password ผิด
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text('Username or Password is incorrect.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -82,10 +113,7 @@ class _Frame1State extends State<Frame1> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: isButtonEnabled
-                  ? () {
-                      // นำทางไปยัง frame_2.dart
-                      Navigator.pushNamed(context, '/frame_2');
-                    }
+                  ? _loginUser
                   : null, // ปิดใช้งานปุ่มหากไม่มีข้อมูล
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),

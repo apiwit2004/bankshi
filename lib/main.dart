@@ -12,6 +12,7 @@ import 'pages/frame_10.dart';
 import 'pages/frame_11.dart';
 import 'pages/frame_12.dart';
 import 'pages/frame_13.dart';
+import 'pages/frame_14.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/frame_1', // เริ่มที่หน้า login
       routes: {
         '/frame_1': (context) => Frame1(),
-        '/frame_2': (context) => Frame2(),
+        '/frame_2': (context) => (ModalRoute.of(context)?.settings.arguments !=
+                null)
+            ? Frame2(
+                username: ModalRoute.of(context)!.settings.arguments as String)
+            : Frame2(username: ''),
         '/frame_3': (context) => Frame3(),
         '/frame_4': (context) => Frame4(),
         '/frame_5': (context) => Frame5(),
@@ -38,6 +43,8 @@ class MyApp extends StatelessWidget {
         '/frame_11': (context) => Frame11(),
         '/frame_12': (context) => Frame12(),
         '/frame_13': (context) => Frame13(),
+        '/frame_14': (context) => Frame14(
+            username: ModalRoute.of(context)?.settings.arguments as String),
       },
     );
   }
